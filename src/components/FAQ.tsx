@@ -17,28 +17,24 @@ export function FAQ() {
 
   const faqData = [
     {
-      question: "What is WAIFU token?",
-      answer: "WAIFU is the utility token for our VTuber ecosystem. Use it for tipping and interacting with the stream. Built on Abstract blockchain for fast, cheap transactions."
+      question: "Lorem ipsum dolor sit amet?",
+      answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
     },
     {
-      question: "How do I buy WAIFU tokens?",
-      answer: "Connect your wallet to Abstract testnet and use our token sale interface. Current rate: 1 ETH = 1,000 WAIFU tokens. Max 10 ETH per wallet."
+      question: "Ut enim ad minim veniam?",
+      answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
     },
     {
-      question: "How do I get testnet ETH?",
-      answer: "Get free testnet ETH from Abstract faucets (Triangle faucet or Thirdweb faucet). Check Abstract documentation for links."
+      question: "Duis aute irure dolor in reprehenderit?",
+      answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
     },
     {
-      question: "How does tipping work?",
-      answer: "Tip the VTuber using ETH or WAIFU tokens directly from the website. Tips are processed through smart contracts instantly."
+      question: "Excepteur sint occaecat cupidatat non proident?",
+      answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
     },
     {
-      question: "Is this real money?",
-      answer: "No, we're on Abstract testnet. All transactions use testnet ETH with no real value. This is for testing only."
-    },
-    {
-      question: "Where can I watch the stream?",
-      answer: "Click the 'Watch Live Stream' button to open the waifu's 24/7 stream on Abstract in a new tab."
+      question: "Sed ut perspiciatis unde omnis iste natus error sit?",
+      answer: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
     }
   ];
 
@@ -66,7 +62,7 @@ export function FAQ() {
             <div key={index}>
               <Card className="overflow-hidden">
                 <CardHeader 
-                  className="cursor-pointer hover:bg-muted/50 transition-colors"
+                  className="cursor-pointer  transition-colors"
                   onClick={() => toggleItem(index)}
                 >
                   <CardTitle className="flex items-center justify-between text-left">

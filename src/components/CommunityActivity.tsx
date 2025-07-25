@@ -6,7 +6,7 @@ import { Leaderboard } from './Leaderboard';
 
 export function CommunityActivity() {
   return (
-    <section className="py-12 lg:py-16 relative overflow-hidden section-bg-community section-transition-border">
+    <section className="py-12 lg:py-16 relative overflow-hidden section-bg-community">
       {/* Redesigned attractive background with better visual appeal */}
       <div className="absolute inset-0 bg-gradient-to-br from-background/88 via-waifu-purple/6 to-background/90" />
       <div className="absolute inset-0 bg-gradient-to-tl from-transparent via-waifu-pink/4 to-transparent" />

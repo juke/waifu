@@ -80,13 +80,13 @@ export function WalletConnection() {
   };
 
   return (
-    <div className="w-full bg-gradient-to-r from-card/90 to-card/80 backdrop-blur-md border-b-2 border-waifu-pink/20 shadow-lg relative overflow-hidden">
+    <div className="w-full bg-gradient-to-r from-card/90 to-card/80 backdrop-blur-md border-b-1 border-waifu-pink/20 shadow-lg relative overflow-hidden">
       {/* Enhanced background with multiple layers */}
       <div className="absolute inset-0 bg-gradient-to-r from-waifu-pink/8 to-waifu-purple/8" />
       <div className="absolute inset-0 bg-gradient-to-br from-transparent via-waifu-neon/3 to-transparent" />
 
-      <div className="container mx-auto px-4 py-1 relative z-10">
-        <div className="flex items-center justify-between flex-wrap gap-2 sm:flex-nowrap">
+      <div className="container mx-auto px-4 py-2 sm:py-3 relative z-10">
+        <div className="flex items-center justify-between flex-wrap gap-3 sm:flex-nowrap">
           {/* Enhanced Brand Section */}
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-2">

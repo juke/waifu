@@ -38,22 +38,33 @@ export default function Home() {
           <HeroSection onWatchStream={handleWatchStream} onTokenSale={handleTokenSale} />
         </section>
 
-        {/* Section Divider */}
-        <div className="border-t-4 border-border/60"></div>
+        {/* Enhanced Section Divider */}
+        <div className="relative h-px">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-border/50 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-waifu-pink/25 to-transparent"></div>
+        </div>
 
         {/* Token Sale Section */}
         <section className="relative" id="token-sale">
           <TokenSale />
         </section>
 
-        {/* Section Divider */}
-        <div className="border-t-4 border-border/60"></div>
+        {/* Enhanced Section Divider */}
+        <div className="relative h-px">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-border/50 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-waifu-purple/25 to-transparent"></div>
+        </div>
 
         {/* Community Activity Section */}
-        <CommunityActivity />
+        <section className="relative">
+          <CommunityActivity />
+        </section>
 
-        {/* Section Divider */}
-        <div className="border-t-4 border-border/60"></div>
+        {/* Enhanced Section Divider */}
+        <div className="relative h-px">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-border/50 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-waifu-pink/25 to-transparent"></div>
+        </div>
 
         {/* FAQ Section */}
         <FAQ />
@@ -81,7 +92,7 @@ export default function Home() {
               </p>
 
               <div className="flex-center gap-6 text-sm text-muted-foreground">
-                <span>© 2024 Waifu Stream</span>
+                <span>© 2025 Waifu Stream</span>
                 <span>•</span>
                 <span>Built with ❤️ for VTubers</span>
                 <span>•</span>

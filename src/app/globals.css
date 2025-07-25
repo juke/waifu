@@ -267,13 +267,7 @@
     background: linear-gradient(135deg, var(--waifu-pink-dark), var(--waifu-purple-dark));
   }
 
-  /* Enhanced Text Effects */
-  .text-waifu-glow {
-    text-shadow: 0 0 10px var(--waifu-neon), 0 0 20px var(--waifu-neon);
-  }
-  .text-waifu-glow-soft {
-    text-shadow: 0 0 5px var(--waifu-pink), 0 0 10px var(--waifu-purple);
-  }
+  /* Enhanced Text Effects - Removed glow effects per user preference */
   .text-waifu-gradient {
     background: linear-gradient(135deg, var(--waifu-pink), var(--waifu-purple));
     -webkit-background-clip: text;
@@ -609,10 +603,10 @@
     justify-content: flex-end;
   }
 
-  /* Enhanced Scrolling */
+  /* Enhanced Scrolling - Better padding for sticky header */
   html {
     scroll-behavior: smooth;
-    scroll-padding-top: 2rem;
+    scroll-padding-top: 6rem;
   }
 
   /* Enhanced Custom Scrollbar */

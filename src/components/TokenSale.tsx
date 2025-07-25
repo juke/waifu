@@ -146,7 +146,7 @@ export function TokenSale() {
   }, [writeError]);
 
   return (
-    <section className="py-16 lg:py-24 relative overflow-hidden section-bg-sale section-transition-border">
+    <section className="py-12 lg:py-16 relative overflow-hidden section-bg-sale">
       {/* Enhanced complementary background with stronger visual distinction */}
       <div className="absolute inset-0 bg-gradient-to-b from-background/85 via-waifu-purple/10 to-waifu-pink/8" />
       <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-waifu-neon/6 to-transparent" />
@@ -172,7 +172,7 @@ export function TokenSale() {
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 max-w-7xl mx-auto">
             {/* Enhanced Sale Stats */}
             <div>
               <Card className="border-2 border-waifu-pink/30 shadow-waifu-pink relative overflow-hidden group hover:border-waifu-pink/50 transition-all duration-500 card-hover-glow">
@@ -286,13 +286,13 @@ export function TokenSale() {
                   </CardTitle>
                   <CardDescription className="text-base mt-2">
                     <span className="text-muted-foreground">
-                      Enter the amount you want to purchase and become part of the waifu revolution
+                      Enter the amount you want to purchase.
                     </span>
                   </CardDescription>
                 </CardHeader>
               <CardContent className="space-y-6 relative z-10">
                 <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-3">
                       <label className="text-sm font-semibold text-foreground">Token Amount</label>
                       <Input
