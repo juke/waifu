@@ -37,8 +37,8 @@ export function TippingComponent() {
 
   const addTokenToWallet = async () => {
     try {
-      // @ts-expect-error - ethereum is injected by MetaMask
-      await window.ethereum.request({
+      // ethereum is injected by MetaMask
+      await (window as { ethereum?: { request: (params: { method: string; params: unknown }) => Promise<unknown> } }).ethereum?.request({
         method: 'wallet_watchAsset',
         params: {
           type: 'ERC20',
