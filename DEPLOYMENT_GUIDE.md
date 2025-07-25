@@ -47,8 +47,7 @@ This guide will help you deploy the enhanced smart contracts to Abstract testnet
 #### Deploy WaifuToken First:
 ```solidity
 // Constructor parameters:
-// initialSupply: 1000000000000000000000000000
-// (This is 1 billion tokens with 18 decimals. In Remix, you can also use scientific notation: 1e27)
+// initialSupply: 1000000000 (1 billion tokens)
 ```
 
 #### Deploy TokenSale Second:
