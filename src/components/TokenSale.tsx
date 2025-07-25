@@ -1,289 +1,393 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Progress } from '@/components/ui/progress';
-import { Coins, TrendingUp, Clock, DollarSign } from 'lucide-react';
-import { motion } from 'framer-motion';
 
-interface TokenSaleProps {
-  onPurchase?: (amount: string) => void;
-  isConnected?: boolean;
-  isLoading?: boolean;
-}
+import { Coins, TrendingUp, AlertCircle } from 'lucide-react';
+import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { parseEther, formatEther, formatUnits } from 'viem';
+import { CONTRACTS, TOKEN_CONFIG } from '@/lib/contracts';
 
-export function TokenSale({ onPurchase, isConnected = false, isLoading = false }: TokenSaleProps) {
+export function TokenSale() {
+  const { isConnected } = useAccount();
   const [amount, setAmount] = useState('');
   const [ethAmount, setEthAmount] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
-  // Mock data - replace with real data from smart contract
-  const tokenPrice = 0.001; // ETH per token
-  const totalSupply = 1000000;
-  const soldTokens = 250000;
-  const progress = (soldTokens / totalSupply) * 100;
+  // Contract interactions
+  const { writeContract, data: hash, isPending, error: writeError } = useWriteContract();
 
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.3
-      }
+  // Wait for transaction confirmation
+  const { isLoading: isConfirming, isSuccess: isConfirmed, error: receiptError } = useWaitForTransactionReceipt({
+    hash,
+  });
+
+  // Log errors for debugging
+  useEffect(() => {
+    if (writeError) {
+      console.error('Write contract error:', writeError);
+      setError(`Transaction failed: ${writeError.message}`);
     }
-  };
-
-  const cardVariants = {
-    hidden: { opacity: 0, y: 50, scale: 0.9 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        duration: 0.6,
-        ease: "easeOut" as const
-      }
+    if (receiptError) {
+      console.error('Receipt error:', receiptError);
+      setError(`Transaction receipt error: ${receiptError.message}`);
     }
-  };
+  }, [writeError, receiptError]);
+
+  // Read enhanced contract data
+  const { data: saleStats } = useReadContract({
+    ...CONTRACTS.TOKEN_SALE,
+    functionName: 'getSaleStats',
+  });
+
+  const { data: rate } = useReadContract({
+    ...CONTRACTS.TOKEN_SALE,
+    functionName: 'rate',
+  });
+
+  const { data: saleActive } = useReadContract({
+    ...CONTRACTS.TOKEN_SALE,
+    functionName: 'saleActive',
+  });
+
+  // Parse sale stats
+  const totalTokensSold = saleStats ? Number(formatUnits(saleStats[0] as bigint, 18)) : 0;
+  const totalETHRaised = saleStats ? Number(formatEther(saleStats[1] as bigint)) : 0;
+  const totalBuyers = saleStats ? Number(saleStats[2]) : 0;
+  const tokensAvailable = saleStats ? Number(formatUnits(saleStats[3] as bigint, 18)) : 1000000;
+  const isActive = saleStats ? saleStats[4] as boolean : true;
+
+  // Calculate values for display
+  const totalSupply = totalTokensSold + tokensAvailable;
+  const progress = totalSupply > 0 ? (totalTokensSold / totalSupply) * 100 : 0;
+  const priceInETH = rate ? 1 / Number(rate) : 0.001;
+
+  // Transaction status
+  const isLoading = isPending || isConfirming;
+
+
 
 
 
   const handleAmountChange = (value: string) => {
     setAmount(value);
-    const eth = parseFloat(value) * tokenPrice;
+    const eth = parseFloat(value) * priceInETH;
     setEthAmount(eth.toFixed(6));
+    setError(null);
   };
 
   const handleEthAmountChange = (value: string) => {
     setEthAmount(value);
-    const tokens = parseFloat(value) / tokenPrice;
+    const tokens = parseFloat(value) / priceInETH;
     setAmount(tokens.toFixed(0));
+    setError(null);
   };
 
-  const handlePurchase = () => {
-    if (amount && parseFloat(amount) > 0) {
-      onPurchase?.(amount);
+  const handlePurchase = async () => {
+    if (!amount || parseFloat(amount) <= 0) {
+      setError('Please enter a valid amount');
+      return;
+    }
+
+    try {
+      setError(null);
+      const tokenAmount = BigInt(amount);
+      const ethValue = parseEther(ethAmount);
+
+      console.log('Purchasing tokens:', { tokenAmount, ethValue, ethAmount });
+
+      writeContract({
+        ...CONTRACTS.TOKEN_SALE,
+        functionName: 'buyTokens',
+        value: ethValue, // Contract calculates tokens from ETH amount
+      });
+    } catch (err) {
+      setError('Failed to initiate purchase. Please try again.');
+      console.error('Purchase error:', err);
     }
   };
 
+  // Reset form on successful transaction
+  useEffect(() => {
+    if (isConfirmed) {
+      setAmount('');
+      setEthAmount('');
+      setError(null);
+    }
+  }, [isConfirmed]);
+
+  // Handle write errors
+  useEffect(() => {
+    if (writeError) {
+      setError(writeError.message || 'Transaction failed');
+    }
+  }, [writeError]);
+
   return (
-    <section className="py-12 lg:py-16 relative overflow-hidden">
-      {/* Simple Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-waifu-pink/5 to-waifu-purple/5" />
+    <section className="py-16 lg:py-24 relative overflow-hidden">
+      {/* Enhanced Background with Multiple Layers */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-waifu-pink/8 to-waifu-purple/8" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-waifu-neon/5 to-transparent" />
+        <div className="absolute top-0 left-1/3 w-96 h-96 bg-waifu-pink/10 rounded-full blur-3xl opacity-30" />
+        <div className="absolute bottom-0 right-1/3 w-96 h-96 bg-waifu-purple/10 rounded-full blur-3xl opacity-30" />
+      </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        <motion.div
-          className="max-w-4xl mx-auto"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-
+        <div className="max-w-6xl mx-auto">
           {/* Enhanced Section Header */}
-          <motion.div
-            className="text-center mb-8 lg:mb-12"
-            variants={cardVariants}
-          >
-            <motion.h2
-              className="text-3xl sm:text-4xl font-bold font-serif mb-4"
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <span className="bg-waifu-gradient bg-clip-text text-transparent">
-                Token Sale
+          <div className="text-center mb-12 lg:mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-waifu-gradient/10 border border-waifu-pink/20 rounded-full text-sm font-medium text-waifu-pink mb-6">
+              <Coins className="w-4 h-4" />
+              Limited Time Offer
+            </div>
+
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-serif mb-6 text-foreground">
+              WAIFU Token Sale
+            </h2>
+
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              Join the revolution of VTuber entertainment on the blockchain.
+              <span className="block mt-2 text-waifu-pink font-semibold">
+                Get your WAIFU tokens now and become part of the community!
               </span>
-            </motion.h2>
-            <motion.p
-              className="text-lg text-muted-foreground max-w-2xl mx-auto"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.6 }}
-            >
-              Get your WAIFU tokens now! Support your favorite VTuber and join the community.
-            </motion.p>
-          </motion.div>
+            </p>
+          </div>
 
-          <motion.div
-            className="grid lg:grid-cols-2 gap-6 lg:gap-8"
-            variants={containerVariants}
-          >
-
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
             {/* Enhanced Sale Stats */}
-            <motion.div
-              variants={cardVariants}
-              whileHover={{ y: -5, scale: 1.02 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <Card className="border-waifu-pink shadow-waifu-pink relative overflow-hidden group">
-                {/* Animated background */}
-                <motion.div
-                  className="absolute inset-0 bg-waifu-gradient opacity-5"
-                  whileHover={{ opacity: 0.1 }}
-                  transition={{ duration: 0.3 }}
-                />
+            <div>
+              <Card className="border-2 border-waifu-pink/30 shadow-waifu-pink relative overflow-hidden group hover:border-waifu-pink/50 transition-all duration-500 card-hover-glow">
+                {/* Enhanced background with gradient */}
+                <div className="absolute inset-0 bg-gradient-to-br from-waifu-pink/5 to-waifu-purple/5 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-waifu-neon/3 to-transparent pointer-events-none" />
 
-                <CardHeader className="relative z-10">
-                  <CardTitle className="flex items-center gap-2">
-                    <motion.div
-                      animate={{ rotate: [0, 5, -5, 0] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    >
-                      <TrendingUp className="w-5 h-5 text-waifu-pink" />
-                    </motion.div>
-                    <motion.span
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.2 }}
-                    >
-                      Sale Progress
-                    </motion.span>
+                <CardHeader className="relative z-10 pb-4">
+                  <CardTitle className="flex items-center gap-3 text-xl">
+                    <div className="p-2 bg-waifu-pink/10 rounded-lg group-hover:bg-waifu-pink/20 transition-colors duration-300">
+                      <TrendingUp className="w-6 h-6 text-waifu-pink" />
+                    </div>
+                    <div>
+                      <span className="text-foreground font-bold">Sale Progress</span>
+                      <div className="text-sm text-muted-foreground font-normal">
+                        Live token sale statistics
+                      </div>
+                    </div>
                   </CardTitle>
-                  <CardDescription>
-                    <motion.span
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.4 }}
-                    >
-                      {soldTokens.toLocaleString()} / {totalSupply.toLocaleString()} tokens sold
-                    </motion.span>
+                  <CardDescription className="text-base mt-2">
+                    <span className="font-semibold text-foreground">
+                      {totalTokensSold.toLocaleString()} / {totalSupply.toLocaleString()}
+                    </span>
+                    <span className="text-muted-foreground ml-2">tokens sold</span>
                   </CardDescription>
                 </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <div className="flex justify-between text-sm mb-2">
-                    <span>Progress</span>
-                    <span className="font-semibold">{progress.toFixed(1)}%</span>
+              <CardContent className="space-y-8 relative z-10">
+                {/* Enhanced Progress Section */}
+                <div className="space-y-6">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h4 className="text-lg font-semibold text-foreground">Sale Progress</h4>
+                      <p className="text-sm text-muted-foreground">Track the token sale in real-time</p>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-3xl font-bold text-waifu-pink">{progress.toFixed(1)}%</div>
+                      <div className="text-sm text-muted-foreground">Complete</div>
+                    </div>
                   </div>
-                  <Progress value={progress} className="h-3" />
+
+                  <div className="space-y-3">
+                    {/* Custom Progress Bar with Better Contrast */}
+                    <div className="relative h-4 bg-gray-200 dark:bg-gray-800 rounded-full border border-gray-300 dark:border-gray-600 overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-waifu-pink to-waifu-purple rounded-full transition-all duration-500 ease-out shadow-sm"
+                        style={{ width: `${Math.min(progress, 100)}%` }}
+                      />
+                      {/* Subtle shine effect */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent rounded-full opacity-50" />
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="font-medium text-foreground">
+                        {totalTokensSold.toLocaleString()} sold
+                      </span>
+                      <span className="text-muted-foreground">
+                        {tokensAvailable.toLocaleString()} remaining
+                      </span>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center p-4 bg-waifu-pink/10 rounded-lg border border-waifu-pink/20">
-                    <div className="flex items-center justify-center gap-2 mb-2">
-                      <DollarSign className="w-4 h-4 text-waifu-pink" />
-                      <span className="text-sm text-muted-foreground">Price</span>
+                {/* Enhanced Analytics Grid */}
+                <div className="space-y-4">
+                  <h4 className="text-lg font-semibold text-foreground">Sale Statistics</h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="text-center p-4 bg-gradient-to-br from-waifu-pink/10 to-waifu-pink/5 rounded-xl border border-waifu-pink/20 hover:border-waifu-pink/40 transition-all duration-300 group">
+                      <div className="text-2xl font-bold text-waifu-pink group-hover:scale-110 transition-transform duration-300">
+                        {totalETHRaised.toFixed(2)}
+                      </div>
+                      <div className="text-sm text-muted-foreground font-medium">ETH Raised</div>
                     </div>
-                    <div className="font-bold text-lg">{tokenPrice} ETH</div>
-                    <div className="text-xs text-muted-foreground">per token</div>
-                  </div>
-                  
-                  <div className="text-center p-4 bg-waifu-purple/10 rounded-lg border border-waifu-purple/20">
-                    <div className="flex items-center justify-center gap-2 mb-2">
-                      <Clock className="w-4 h-4 text-waifu-purple" />
-                      <span className="text-sm text-muted-foreground">Remaining</span>
+
+                    <div className="text-center p-4 bg-gradient-to-br from-waifu-purple/10 to-waifu-purple/5 rounded-xl border border-waifu-purple/20 hover:border-waifu-purple/40 transition-all duration-300 group">
+                      <div className="text-2xl font-bold text-waifu-purple group-hover:scale-110 transition-transform duration-300">
+                        {totalBuyers}
+                      </div>
+                      <div className="text-sm text-muted-foreground font-medium">Community Members</div>
                     </div>
-                    <div className="font-bold text-lg">{(totalSupply - soldTokens).toLocaleString()}</div>
-                    <div className="text-xs text-muted-foreground">tokens</div>
+
+                    <div className="text-center p-4 bg-gradient-to-br from-blue-500/10 to-blue-500/5 rounded-xl border border-blue-500/20 hover:border-blue-500/40 transition-all duration-300 group">
+                      <div className="text-xl font-bold text-blue-500 group-hover:scale-110 transition-transform duration-300">
+                        {priceInETH.toFixed(6)}
+                      </div>
+                      <div className="text-sm text-muted-foreground font-medium">ETH per Token</div>
+                    </div>
+
+                    <div className="text-center p-4 bg-gradient-to-br from-green-500/10 to-green-500/5 rounded-xl border border-green-500/20 hover:border-green-500/40 transition-all duration-300 group">
+                      <div className="text-xl font-bold text-green-500 group-hover:scale-110 transition-transform duration-300">
+                        {totalBuyers > 0 ? (totalETHRaised / totalBuyers).toFixed(3) : '0'}
+                      </div>
+                      <div className="text-sm text-muted-foreground font-medium">Avg Purchase</div>
+                    </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
-            </motion.div>
+            </div>
 
             {/* Enhanced Purchase Interface */}
-            <motion.div
-              variants={cardVariants}
-              whileHover={{ y: -5, scale: 1.02 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <Card className="border-waifu-purple shadow-waifu-purple relative overflow-hidden group">
-                {/* Animated background */}
-                <motion.div
-                  className="absolute inset-0 bg-waifu-gradient opacity-5"
-                  whileHover={{ opacity: 0.1 }}
-                  transition={{ duration: 0.3 }}
-                />
-              <CardHeader className="relative z-10">
-                <CardTitle className="flex items-center gap-2">
-                  <motion.div
-                    animate={{ rotate: [0, 5, -5, 0] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  >
-                    <Coins className="w-5 h-5 text-waifu-purple" />
-                  </motion.div>
-                  <motion.span
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.2 }}
-                  >
-                    Buy WAIFU Tokens
-                  </motion.span>
-                </CardTitle>
-                <CardDescription>
-                  <motion.span
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                  >
-                    Enter the amount you want to purchase
-                  </motion.span>
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Token Amount</label>
-                  <Input
-                    type="number"
-                    placeholder="1000"
-                    value={amount}
-                    onChange={(e) => handleAmountChange(e.target.value)}
-                    className="border-waifu-purple/50 focus:border-waifu-purple"
-                  />
-                </div>
+            <div>
+              <Card className="border-2 border-waifu-purple/30 shadow-waifu-purple relative overflow-hidden group hover:border-waifu-purple/50 transition-all duration-500 card-hover-glow">
+                {/* Enhanced background */}
+                <div className="absolute inset-0 bg-gradient-to-br from-waifu-purple/5 to-waifu-pink/5 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-tl from-transparent via-waifu-neon/3 to-transparent pointer-events-none" />
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">ETH Amount</label>
-                  <Input
-                    type="number"
-                    placeholder="1.0"
-                    value={ethAmount}
-                    onChange={(e) => handleEthAmountChange(e.target.value)}
-                    className="border-waifu-purple/50 focus:border-waifu-purple"
-                  />
-                </div>
-
-                {amount && ethAmount && (
-                  <div className="p-3 bg-muted rounded-lg text-sm">
-                    <div className="flex justify-between">
-                      <span>You will receive:</span>
-                      <span className="font-semibold">{amount} WAIFU</span>
+                <CardHeader className="relative z-10 pb-6">
+                  <CardTitle className="flex items-center gap-3 text-xl">
+                    <div className="p-2 bg-waifu-purple/10 rounded-lg group-hover:bg-waifu-purple/20 transition-colors duration-300">
+                      <Coins className="w-6 h-6 text-waifu-purple" />
                     </div>
-                    <div className="flex justify-between">
-                      <span>Total cost:</span>
-                      <span className="font-semibold">{ethAmount} ETH</span>
+                    <div>
+                      <span className="text-foreground font-bold">Buy WAIFU Tokens</span>
+                      <div className="text-sm text-muted-foreground font-normal">
+                        Join the community today
+                      </div>
+                    </div>
+                  </CardTitle>
+                  <CardDescription className="text-base mt-2">
+                    <span className="text-muted-foreground">
+                      Enter the amount you want to purchase and become part of the waifu revolution
+                    </span>
+                  </CardDescription>
+                </CardHeader>
+              <CardContent className="space-y-6 relative z-10">
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-3">
+                      <label className="text-sm font-semibold text-foreground">Token Amount</label>
+                      <Input
+                        type="number"
+                        placeholder="1000"
+                        value={amount}
+                        onChange={(e) => handleAmountChange(e.target.value)}
+                        className="border-waifu-purple/30 focus:border-waifu-purple h-12 text-lg"
+                      />
+                      <p className="text-xs text-muted-foreground">Minimum: 100 WAIFU</p>
+                    </div>
+
+                    <div className="space-y-3">
+                      <label className="text-sm font-semibold text-foreground">ETH Amount</label>
+                      <Input
+                        type="number"
+                        placeholder="1.0"
+                        value={ethAmount}
+                        onChange={(e) => handleEthAmountChange(e.target.value)}
+                        className="border-waifu-purple/30 focus:border-waifu-purple h-12 text-lg"
+                      />
+                      <p className="text-xs text-muted-foreground">Current rate: {priceInETH.toFixed(6)} ETH/token</p>
                     </div>
                   </div>
-                )}
 
-                <Button
-                  onClick={handlePurchase}
-                  disabled={!isConnected || !amount || parseFloat(amount) <= 0 || isLoading}
-                  className="w-full bg-waifu-gradient hover:bg-waifu-gradient-reverse border-waifu-purple-border shadow-waifu-purple text-white font-semibold"
-                  size="lg"
-                >
-                  {!isConnected ? (
-                    'Connect Wallet to Purchase'
-                  ) : isLoading ? (
-                    'Processing...'
-                  ) : (
-                    'Purchase Tokens'
+                  {amount && ethAmount && (
+                    <div className="p-4 bg-gradient-to-r from-waifu-purple/10 to-waifu-pink/10 border border-waifu-purple/20 rounded-xl">
+                      <h4 className="font-semibold text-foreground mb-3">Purchase Summary</h4>
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground">You will receive:</span>
+                          <span className="font-bold text-waifu-purple text-lg">{amount} WAIFU</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground">Total cost:</span>
+                          <span className="font-bold text-foreground text-lg">{ethAmount} ETH</span>
+                        </div>
+                        <div className="pt-2 border-t border-border/30">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-muted-foreground">Rate:</span>
+                            <span className="text-sm font-medium">{priceInETH.toFixed(6)} ETH per WAIFU</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   )}
-                </Button>
 
-                {!isConnected && (
-                  <p className="text-xs text-muted-foreground text-center">
-                    Connect your wallet to participate in the token sale
-                  </p>
-                )}
+                  {error && (
+                    <div className="p-4 bg-gradient-to-r from-red-500/10 to-red-600/10 border border-red-500/30 rounded-xl">
+                      <div className="flex items-center gap-3">
+                        <div className="p-1 bg-red-500/20 rounded-full">
+                          <AlertCircle className="w-4 h-4 text-red-500" />
+                        </div>
+                        <div>
+                          <h5 className="font-semibold text-red-600 dark:text-red-400">Error</h5>
+                          <p className="text-sm text-red-600/80 dark:text-red-400/80">{error}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {isConfirmed && (
+                    <div className="p-4 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-xl">
+                      <div className="flex items-center gap-3">
+                        <div className="p-1 bg-green-500/20 rounded-full">
+                          <span className="text-green-500 text-lg">✅</span>
+                        </div>
+                        <div>
+                          <h5 className="font-semibold text-green-600 dark:text-green-400">Success!</h5>
+                          <p className="text-sm text-green-600/80 dark:text-green-400/80">
+                            Purchase successful! Tokens have been added to your wallet.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  <Button
+                    onClick={handlePurchase}
+                    disabled={!isConnected || !amount || parseFloat(amount) <= 0 || isLoading}
+                    className="w-full bg-waifu-gradient hover:bg-waifu-gradient-reverse border-2 border-waifu-purple-border shadow-waifu-purple text-white font-bold py-4 h-auto text-lg disabled:opacity-50 transition-all duration-300 hover:scale-105"
+                    size="lg"
+                  >
+                    {!isConnected ? (
+                      'Connect Wallet to Purchase'
+                    ) : isLoading ? (
+                      isPending ? 'Confirming Transaction...' : 'Processing Purchase...'
+                    ) : (
+                      `Purchase ${amount || '0'} WAIFU Tokens`
+                    )}
+                  </Button>
+
+                  {!isConnected && (
+                    <div className="pt-4 border-t border-border/30">
+                      <p className="text-sm text-muted-foreground text-center">
+                        Connect your wallet to participate in the token sale
+                      </p>
+                    </div>
+                  )}
+                </div>
               </CardContent>
             </Card>
-            </motion.div>
-          </motion.div>
-        </motion.div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

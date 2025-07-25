@@ -56,11 +56,20 @@
   --color-destructive-border: var(--destructive-border);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-primary-border: var(--primary-border);
+  /* Enhanced Waifu Color Tokens */
   --color-waifu-pink: var(--waifu-pink);
   --color-waifu-purple: var(--waifu-purple);
   --color-waifu-neon: var(--waifu-neon);
   --color-waifu-pink-border: var(--waifu-pink-border);
   --color-waifu-purple-border: var(--waifu-purple-border);
+  --color-waifu-pink-light: var(--waifu-pink-light);
+  --color-waifu-purple-light: var(--waifu-purple-light);
+  --color-waifu-pink-dark: var(--waifu-pink-dark);
+  --color-waifu-purple-dark: var(--waifu-purple-dark);
+  --color-waifu-accent: var(--waifu-accent);
+  --color-waifu-success: var(--waifu-success);
+  --color-waifu-warning: var(--waifu-warning);
+  --color-waifu-error: var(--waifu-error);
 }
 
 :root {
@@ -99,11 +108,20 @@
   --primary-border: oklch(0.59 0.096 111.8);
   --destructive-foreground: oklch(0.97 0.018 0);
   --destructive-border: oklch(0.43 0.24 29.2);
-  --waifu-pink: oklch(0.75 0.25 330);
-  --waifu-purple: oklch(0.65 0.25 280);
-  --waifu-neon: oklch(0.8 0.3 200);
-  --waifu-pink-border: oklch(0.55 0.25 330);
-  --waifu-purple-border: oklch(0.45 0.25 280);
+  /* Enhanced Waifu Color Palette */
+  --waifu-pink: oklch(0.78 0.28 330);
+  --waifu-purple: oklch(0.68 0.28 280);
+  --waifu-neon: oklch(0.82 0.32 200);
+  --waifu-pink-border: oklch(0.58 0.28 330);
+  --waifu-purple-border: oklch(0.48 0.28 280);
+  --waifu-pink-light: oklch(0.88 0.18 330);
+  --waifu-purple-light: oklch(0.82 0.18 280);
+  --waifu-pink-dark: oklch(0.58 0.35 330);
+  --waifu-purple-dark: oklch(0.48 0.35 280);
+  --waifu-accent: oklch(0.75 0.25 310);
+  --waifu-success: oklch(0.7 0.25 140);
+  --waifu-warning: oklch(0.8 0.25 60);
+  --waifu-error: oklch(0.7 0.25 20);
 }
 
 .dark {
@@ -138,20 +156,69 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
-  --waifu-pink: oklch(0.8 0.3 330);
-  --waifu-purple: oklch(0.7 0.3 280);
-  --waifu-neon: oklch(0.85 0.35 200);
-  --waifu-pink-border: oklch(0.6 0.3 330);
-  --waifu-purple-border: oklch(0.5 0.3 280);
+  /* Enhanced Dark Mode Waifu Colors */
+  --waifu-pink: oklch(0.82 0.32 330);
+  --waifu-purple: oklch(0.72 0.32 280);
+  --waifu-neon: oklch(0.88 0.38 200);
+  --waifu-pink-border: oklch(0.62 0.32 330);
+  --waifu-purple-border: oklch(0.52 0.32 280);
+  --waifu-pink-light: oklch(0.92 0.22 330);
+  --waifu-purple-light: oklch(0.86 0.22 280);
+  --waifu-pink-dark: oklch(0.62 0.38 330);
+  --waifu-purple-dark: oklch(0.52 0.38 280);
+  --waifu-accent: oklch(0.78 0.28 310);
+  --waifu-success: oklch(0.75 0.28 140);
+  --waifu-warning: oklch(0.85 0.28 60);
+  --waifu-error: oklch(0.75 0.28 20);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
     font-weight: var(--font-weight-bold);
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+  }
+
+  /* Enhanced Typography Scale */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+
+  h1 {
+    @apply text-4xl sm:text-5xl lg:text-6xl;
+  }
+
+  h2 {
+    @apply text-3xl sm:text-4xl lg:text-5xl;
+  }
+
+  h3 {
+    @apply text-2xl sm:text-3xl lg:text-4xl;
+  }
+
+  h4 {
+    @apply text-xl sm:text-2xl lg:text-3xl;
+  }
+
+  h5 {
+    @apply text-lg sm:text-xl lg:text-2xl;
+  }
+
+  h6 {
+    @apply text-base sm:text-lg lg:text-xl;
+  }
+
+  /* Enhanced spacing utilities */
+  .container {
+    @apply mx-auto px-4 sm:px-6 lg:px-8;
   }
   .border {
     border-width: 2px !important;
@@ -183,23 +250,51 @@
   .shadow-waifu-purple {
     box-shadow: 0 2px 0 0 var(--waifu-purple-border);
   }
+  /* Enhanced Gradient System */
   .bg-waifu-gradient {
     background: linear-gradient(135deg, var(--waifu-pink), var(--waifu-purple));
   }
   .bg-waifu-gradient-reverse {
     background: linear-gradient(135deg, var(--waifu-purple), var(--waifu-pink));
   }
-  .text-waifu-glow {
-    text-shadow: 0 0 10px var(--waifu-neon);
+  .bg-waifu-gradient-radial {
+    background: radial-gradient(circle at center, var(--waifu-pink), var(--waifu-purple));
   }
+  .bg-waifu-gradient-soft {
+    background: linear-gradient(135deg, var(--waifu-pink-light), var(--waifu-purple-light));
+  }
+  .bg-waifu-gradient-intense {
+    background: linear-gradient(135deg, var(--waifu-pink-dark), var(--waifu-purple-dark));
+  }
+
+  /* Enhanced Text Effects */
+  .text-waifu-glow {
+    text-shadow: 0 0 10px var(--waifu-neon), 0 0 20px var(--waifu-neon);
+  }
+  .text-waifu-glow-soft {
+    text-shadow: 0 0 5px var(--waifu-pink), 0 0 10px var(--waifu-purple);
+  }
+  .text-waifu-gradient {
+    background: linear-gradient(135deg, var(--waifu-pink), var(--waifu-purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Enhanced Border System */
   .border-waifu-pink {
     border-color: var(--waifu-pink-border);
   }
   .border-waifu-purple {
     border-color: var(--waifu-purple-border);
   }
+  .border-waifu-gradient {
+    border: 2px solid transparent;
+    background: linear-gradient(var(--background), var(--background)) padding-box,
+                linear-gradient(135deg, var(--waifu-pink), var(--waifu-purple)) border-box;
+  }
 
-  /* Enhanced visual effects */
+  /* Enhanced Visual Effects */
   .bg-waifu-glow {
     background: radial-gradient(circle at center, var(--waifu-pink), var(--waifu-purple));
     filter: blur(20px);
@@ -207,25 +302,78 @@
   }
 
   .card-hover-glow {
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .card-hover-glow:hover {
     box-shadow: 0 0 30px var(--waifu-pink), 0 0 60px var(--waifu-purple);
-    transform: translateY(-5px);
+    transform: translateY(-2px);
   }
 
+  .card-subtle-glow {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1), 0 0 40px var(--waifu-pink-light);
+  }
+
+  .waifu-glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .waifu-glass-dark {
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Enhanced Button Styles - Using standard CSS properties */
+  .btn-waifu-primary {
+    background: linear-gradient(135deg, var(--waifu-pink), var(--waifu-purple));
+    border: 2px solid var(--waifu-pink-border);
+    box-shadow: 0 2px 0 0 var(--waifu-pink-border);
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .btn-waifu-primary:hover {
+    background: linear-gradient(135deg, var(--waifu-purple), var(--waifu-pink));
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .btn-waifu-secondary {
+    background: transparent;
+    border: 2px solid var(--waifu-pink);
+    color: var(--waifu-pink);
+    transition: all 0.3s ease-in-out;
+  }
+
+  .btn-waifu-secondary:hover {
+    background: var(--waifu-pink);
+    color: white;
+  }
+
+  /* Enhanced Animations */
   .animate-float {
-    animation: float 3s ease-in-out infinite;
+    animation: float 4s ease-in-out infinite;
   }
 
   .animate-pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite;
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+
+  .animate-gradient-shift {
+    animation: gradient-shift 6s ease-in-out infinite;
+  }
+
+  .animate-bounce-soft {
+    animation: bounce-soft 2s ease-in-out infinite;
   }
 
   @keyframes float {
     0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
+    50% { transform: translateY(-8px); }
   }
 
   @keyframes pulse-glow {
@@ -239,27 +387,126 @@
     }
   }
 
-  /* Smooth scrolling */
-  html {
-    scroll-behavior: smooth;
+  @keyframes gradient-shift {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
   }
 
-  /* Custom scrollbar */
+  @keyframes bounce-soft {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-4px);
+    }
+  }
+
+  /* Enhanced Spacing System */
+  .space-y-section > * + * {
+    margin-top: 4rem;
+  }
+
+  .space-y-component > * + * {
+    margin-top: 2rem;
+  }
+
+  .space-y-element > * + * {
+    margin-top: 1rem;
+  }
+
+  /* Enhanced Layout Utilities */
+  .grid-auto-fit {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+
+  .grid-auto-fill {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+
+  .flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .flex-start {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .flex-end {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  /* Enhanced Scrolling */
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 2rem;
+  }
+
+  /* Enhanced Custom Scrollbar */
   ::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
   }
 
   ::-webkit-scrollbar-track {
     background: var(--background);
+    border-radius: 5px;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(var(--waifu-pink), var(--waifu-purple));
-    border-radius: 4px;
+    background: linear-gradient(135deg, var(--waifu-pink), var(--waifu-purple));
+    border-radius: 5px;
+    border: 2px solid var(--background);
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(var(--waifu-purple), var(--waifu-pink));
+    background: linear-gradient(135deg, var(--waifu-purple), var(--waifu-pink));
+    box-shadow: 0 0 10px var(--waifu-pink);
+  }
+
+  /* Enhanced Focus States */
+  *:focus-visible {
+    outline: 2px solid var(--waifu-pink);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Enhanced Selection */
+  ::selection {
+    background: var(--waifu-pink);
+    color: white;
+  }
+
+  ::-moz-selection {
+    background: var(--waifu-pink);
+    color: white;
+  }
+
+  /* Enhanced Print Styles */
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+
+    * {
+      background: white !important;
+      color: black !important;
+      box-shadow: none !important;
+    }
   }
 
   .texture {
