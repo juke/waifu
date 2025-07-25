@@ -79,8 +79,7 @@ export const CONTRACT_ADDRESSES = {
 ### Step 4: Fund TokenSale Contract
 
 1. **Transfer WAIFU tokens to TokenSale contract**:
-   - Use the Admin Panel on your website
-   - Or call `transfer()` directly on WAIFU token
+   - Call `transfer()` directly on WAIFU token
    - Recommended: 400,000,000 tokens (40% of supply)
 
 2. **Verify funding**:
