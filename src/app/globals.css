@@ -301,6 +301,164 @@
     opacity: 0.3;
   }
 
+  /* Enhanced Section Background System */
+  .section-bg-hero {
+    background: linear-gradient(135deg, var(--background) 0%, var(--waifu-pink)/12 50%, var(--background) 100%);
+    position: relative;
+  }
+
+  .section-bg-hero::before {
+    content: '';
+    position: absolute;
+    top: 15%;
+    left: 8%;
+    width: 400px;
+    height: 400px;
+    background: var(--waifu-pink)/15;
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: -1;
+  }
+
+  .section-bg-hero::after {
+    content: '';
+    position: absolute;
+    bottom: 15%;
+    right: 12%;
+    width: 500px;
+    height: 500px;
+    background: var(--waifu-purple)/12;
+    border-radius: 50%;
+    filter: blur(100px);
+    z-index: -1;
+  }
+
+  .section-bg-sale {
+    background: linear-gradient(180deg, var(--background) 0%, var(--waifu-purple)/10 40%, var(--waifu-pink)/8 100%);
+    position: relative;
+  }
+
+  .section-bg-sale::before {
+    content: '';
+    position: absolute;
+    top: 8%;
+    right: 18%;
+    width: 350px;
+    height: 350px;
+    background: var(--waifu-purple)/14;
+    border-radius: 50%;
+    filter: blur(70px);
+    z-index: -1;
+  }
+
+  .section-bg-sale::after {
+    content: '';
+    position: absolute;
+    bottom: 12%;
+    left: 22%;
+    width: 450px;
+    height: 450px;
+    background: var(--waifu-pink)/12;
+    border-radius: 50%;
+    filter: blur(90px);
+    z-index: -1;
+  }
+
+  .section-bg-community {
+    background: linear-gradient(135deg, var(--background) 0%, var(--waifu-purple)/6 25%, var(--waifu-pink)/8 75%, var(--background) 100%);
+    position: relative;
+  }
+
+  .section-bg-community::before {
+    content: '';
+    position: absolute;
+    top: 20%;
+    left: 15%;
+    width: 400px;
+    height: 400px;
+    background: var(--waifu-pink)/12;
+    border-radius: 50%;
+    filter: blur(100px);
+    z-index: -1;
+  }
+
+  .section-bg-community::after {
+    content: '';
+    position: absolute;
+    bottom: 25%;
+    right: 18%;
+    width: 350px;
+    height: 350px;
+    background: var(--waifu-purple)/10;
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: -1;
+  }
+
+  .section-bg-faq {
+    background: linear-gradient(225deg, var(--background) 0%, var(--waifu-pink)/10 100%);
+    position: relative;
+  }
+
+  .section-bg-faq::before {
+    content: '';
+    position: absolute;
+    top: 25%;
+    left: 15%;
+    width: 350px;
+    height: 350px;
+    background: var(--waifu-pink)/12;
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: -1;
+  }
+
+  .section-bg-faq::after {
+    content: '';
+    position: absolute;
+    bottom: 30%;
+    right: 25%;
+    width: 250px;
+    height: 250px;
+    background: var(--waifu-purple)/8;
+    border-radius: 50%;
+    filter: blur(60px);
+    z-index: -1;
+  }
+
+  /* Section Transition Enhancements */
+  .section-transition-border {
+    position: relative;
+  }
+
+  .section-transition-border::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--waifu-pink)/20, var(--waifu-purple)/20, transparent);
+    z-index: 1;
+  }
+
+  .section-transition-border-bottom {
+    position: relative;
+  }
+
+  .section-transition-border-bottom::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--waifu-purple)/20, var(--waifu-pink)/20, transparent);
+    z-index: 1;
+  }
+
   .card-hover-glow {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
@@ -509,18 +667,11 @@
     }
   }
 
-  .texture {
-    background-image: url(https://matsu-theme.vercel.app/texture.jpg);
-    background-size: 100% 100%;
-    background-repeat: repeat;
-    opacity: 0.08;
-    mix-blend-mode: multiply;
-    z-index: 100;
-    isolation: isolate;
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100dvh;
-    pointer-events: none;
+
+  /* GPU acceleration for smooth animations */
+  .transition-gpu {
+    transform: translateZ(0);
+    will-change: transform, opacity;
+    backface-visibility: hidden;
   }
 }

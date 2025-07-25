@@ -1,31 +1,30 @@
 'use client';
 
-import { useState } from 'react';
 import { WalletConnection } from '@/components/WalletConnection';
 import { HeroSection } from '@/components/HeroSection';
 import { TokenSale } from '@/components/TokenSale';
-import { RecentTips } from '@/components/RecentTips';
-import { Leaderboard } from '@/components/Leaderboard';
-
+import { CommunityActivity } from '@/components/CommunityActivity';
 import { FAQ } from '@/components/FAQ';
 
 
 export default function Home() {
-
   const handleWatchStream = () => {
     // Open Abstract stream in new tab
     window.open('https://abstract.stream/waifu', '_blank');
   };
 
+  const handleTokenSale = () => {
+    // Scroll to token sale section
+    const tokenSaleSection = document.getElementById('token-sale');
+    if (tokenSaleSection) {
+      tokenSaleSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
-      {/* Enhanced Background with Multiple Layers */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-waifu-pink/5 to-waifu-purple/5" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-waifu-neon/3 to-transparent" />
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-waifu-pink/10 rounded-full blur-3xl opacity-20" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-waifu-purple/10 rounded-full blur-3xl opacity-20" />
-      </div>
+    <div className="min-h-screen bg-background relative">
+      {/* Simplified base background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-muted/20" />
 
       {/* Header with Wallet Connection */}
       <header className="relative z-20 sticky top-0">
@@ -33,44 +32,23 @@ export default function Home() {
       </header>
 
       {/* Main Content with Enhanced Layout */}
-      <main className="relative z-10 space-y-section">
-        {/* Hero Section */}
-        <section className="relative">
-          <HeroSection onWatchStream={handleWatchStream} />
-        </section>
+      <main className="relative z-10">
+        {/* Hero and Token Sale - No gap between them */}
+        <div>
+          <section className="relative">
+            <HeroSection onWatchStream={handleWatchStream} onTokenSale={handleTokenSale} />
+          </section>
 
-        {/* Token Sale Section */}
-        <section className="relative">
-          <TokenSale />
-        </section>
+          <section className="relative" id="token-sale">
+            <TokenSale />
+          </section>
+        </div>
 
-        {/* Community Activity Section */}
-        <section className="py-12 lg:py-16">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-serif mb-4 text-foreground">
-                Community Activity
-              </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                See what the community is up to and join the leaderboard!
-              </p>
-            </div>
+        {/* Community Activity Section - No spacing for seamless flow */}
+        <CommunityActivity />
 
-            <div className="grid lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
-              <div className="space-y-6">
-                <RecentTips />
-              </div>
-              <div className="space-y-6">
-                <Leaderboard />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ Section */}
-        <section className="relative">
-          <FAQ />
-        </section>
+        {/* FAQ Section - No spacing for seamless flow */}
+        <FAQ />
 
       </main>
 

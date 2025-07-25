@@ -43,7 +43,12 @@ export function FAQ() {
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <section className="py-12 lg:py-16 relative overflow-hidden section-bg-faq section-transition-border">
+      {/* Enhanced background to complete visual hierarchy with clear distinction */}
+      <div className="absolute inset-0 bg-gradient-to-br from-background/88 via-waifu-pink/9 to-background/90" />
+      <div className="absolute inset-0 bg-gradient-to-tl from-transparent via-waifu-purple/4 to-transparent" />
+
+      <div className="container mx-auto px-4 relative z-10">
       <div className="space-y-6">
         {/* Header */}
         <div className="text-center space-y-4 mb-8">
@@ -111,6 +116,7 @@ export function FAQ() {
           </Card>
         </div>
       </div>
-    </div>
+      </div>
+    </section>
   );
 }

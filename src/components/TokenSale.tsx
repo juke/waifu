@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 
-import { Coins, TrendingUp, AlertCircle } from 'lucide-react';
+import { Coins, TrendingUp, AlertCircle, Plus } from 'lucide-react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { parseEther, formatEther, formatUnits } from 'viem';
 import { CONTRACTS, TOKEN_CONFIG } from '@/lib/contracts';
@@ -67,6 +67,26 @@ export function TokenSale() {
   // Transaction status
   const isLoading = isPending || isConfirming;
 
+  const addTokenToWallet = async () => {
+    try {
+      // @ts-expect-error - ethereum is injected by MetaMask
+      await window.ethereum.request({
+        method: 'wallet_watchAsset',
+        params: {
+          type: 'ERC20',
+          options: {
+            address: CONTRACTS.WAIFU_TOKEN.address,
+            symbol: 'WAIFU',
+            decimals: 18,
+            image: '', // You can add a token logo URL here
+          },
+        },
+      });
+    } catch (error) {
+      console.error('Failed to add token to wallet:', error);
+    }
+  };
+
 
 
 
@@ -126,14 +146,10 @@ export function TokenSale() {
   }, [writeError]);
 
   return (
-    <section className="py-16 lg:py-24 relative overflow-hidden">
-      {/* Enhanced Background with Multiple Layers */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-waifu-pink/8 to-waifu-purple/8" />
-        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-waifu-neon/5 to-transparent" />
-        <div className="absolute top-0 left-1/3 w-96 h-96 bg-waifu-pink/10 rounded-full blur-3xl opacity-30" />
-        <div className="absolute bottom-0 right-1/3 w-96 h-96 bg-waifu-purple/10 rounded-full blur-3xl opacity-30" />
-      </div>
+    <section className="py-16 lg:py-24 relative overflow-hidden section-bg-sale section-transition-border">
+      {/* Enhanced complementary background with stronger visual distinction */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background/85 via-waifu-purple/10 to-waifu-pink/8" />
+      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-waifu-neon/6 to-transparent" />
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-6xl mx-auto">
@@ -380,6 +396,24 @@ export function TokenSale() {
                       <p className="text-sm text-muted-foreground text-center">
                         Connect your wallet to participate in the token sale
                       </p>
+                    </div>
+                  )}
+
+                  {/* Add to Wallet Helper */}
+                  {isConnected && (
+                    <div className="pt-4 border-t border-border/30">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">Don&apos;t see WAIFU in your wallet?</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={addTokenToWallet}
+                          className="h-auto px-3 py-1 text-sm hover:text-waifu-purple hover:bg-waifu-purple/10 transition-all duration-300"
+                        >
+                          <Plus className="w-4 h-4 mr-1" />
+                          Add Token
+                        </Button>
+                      </div>
                     </div>
                   )}
                 </div>
