@@ -33,21 +33,29 @@ export default function Home() {
 
       {/* Main Content with Enhanced Layout */}
       <main className="relative z-10">
-        {/* Hero and Token Sale - No gap between them */}
-        <div>
-          <section className="relative">
-            <HeroSection onWatchStream={handleWatchStream} onTokenSale={handleTokenSale} />
-          </section>
+        {/* Hero Section */}
+        <section className="relative">
+          <HeroSection onWatchStream={handleWatchStream} onTokenSale={handleTokenSale} />
+        </section>
 
-          <section className="relative" id="token-sale">
-            <TokenSale />
-          </section>
-        </div>
+        {/* Section Divider */}
+        <div className="border-t-4 border-border/60"></div>
 
-        {/* Community Activity Section - No spacing for seamless flow */}
+        {/* Token Sale Section */}
+        <section className="relative" id="token-sale">
+          <TokenSale />
+        </section>
+
+        {/* Section Divider */}
+        <div className="border-t-4 border-border/60"></div>
+
+        {/* Community Activity Section */}
         <CommunityActivity />
 
-        {/* FAQ Section - No spacing for seamless flow */}
+        {/* Section Divider */}
+        <div className="border-t-4 border-border/60"></div>
+
+        {/* FAQ Section */}
         <FAQ />
 
       </main>

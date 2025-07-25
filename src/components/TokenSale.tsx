@@ -192,12 +192,6 @@ export function TokenSale() {
                       </div>
                     </div>
                   </CardTitle>
-                  <CardDescription className="text-base mt-2">
-                    <span className="font-semibold text-foreground">
-                      {totalTokensSold.toLocaleString()} / {totalSupply.toLocaleString()}
-                    </span>
-                    <span className="text-muted-foreground ml-2">tokens sold</span>
-                  </CardDescription>
                 </CardHeader>
               <CardContent className="space-y-8 relative z-10">
                 {/* Enhanced Progress Section */}
@@ -249,7 +243,7 @@ export function TokenSale() {
                       <div className="text-2xl font-bold text-waifu-purple group-hover:scale-110 transition-transform duration-300">
                         {totalBuyers}
                       </div>
-                      <div className="text-sm text-muted-foreground font-medium">Community Members</div>
+                      <div className="text-sm text-muted-foreground font-medium">Members</div>
                     </div>
 
                     <div className="text-center p-4 bg-gradient-to-br from-blue-500/10 to-blue-500/5 rounded-xl border border-blue-500/20 hover:border-blue-500/40 transition-all duration-300 group">

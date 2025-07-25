@@ -1,10 +1,12 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Wallet, WifiOff, Sparkles, AlertTriangle } from 'lucide-react';
-import { useAccount, useConnect, useDisconnect, useChainId, useSwitchChain } from 'wagmi';
+import { Wallet, WifiOff, Sparkles, AlertTriangle, Coins } from 'lucide-react';
+import { useAccount, useConnect, useDisconnect, useChainId, useSwitchChain, useReadContract } from 'wagmi';
 import { abstractTestnet } from '@/lib/wagmi';
 import { useEffect, useState } from 'react';
+import { CONTRACTS } from '@/lib/contracts';
+import { formatTokenBalance } from '@/lib/utils';
 
 export function WalletConnection() {
   const { address, isConnected } = useAccount();
@@ -14,7 +16,12 @@ export function WalletConnection() {
   const { switchChain } = useSwitchChain();
   const [showNetworkWarning, setShowNetworkWarning] = useState(false);
 
-  // Removed balance logic as requested
+  // Get user's WAIFU token balance
+  const { data: waifuBalance } = useReadContract({
+    ...CONTRACTS.WAIFU_TOKEN,
+    functionName: 'balanceOf',
+    args: address ? [address] : undefined,
+  });
 
   // Debug logging
   useEffect(() => {
@@ -78,22 +85,22 @@ export function WalletConnection() {
       <div className="absolute inset-0 bg-gradient-to-r from-waifu-pink/8 to-waifu-purple/8" />
       <div className="absolute inset-0 bg-gradient-to-br from-transparent via-waifu-neon/3 to-transparent" />
 
-      <div className="container mx-auto px-4 py-5 relative z-10">
-        <div className="flex items-center justify-between">
+      <div className="container mx-auto px-4 py-1 relative z-10">
+        <div className="flex items-center justify-between flex-wrap gap-2 sm:flex-nowrap">
           {/* Enhanced Brand Section */}
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-waifu-gradient rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-lg">W</span>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-waifu-gradient rounded-lg flex items-center justify-center shadow-lg">
+                <span className="text-white font-bold text-sm">W</span>
               </div>
               <div>
-                <h1 className="text-2xl font-bold font-serif text-waifu-gradient">
+                <h1 className="text-lg sm:text-xl font-bold font-serif text-waifu-gradient">
                   Waifu Stream
                 </h1>
-                <div className="hidden sm:flex items-center gap-2 text-sm text-muted-foreground">
-                  <Sparkles className="w-4 h-4 text-waifu-pink" />
+                <div className="hidden md:flex items-center gap-1 text-xs text-muted-foreground">
+                  <Sparkles className="w-3 h-3 text-waifu-pink" />
                   <span className="font-medium">VTuber Launchpad</span>
-                  <span className="px-2 py-1 bg-waifu-pink/10 border border-waifu-pink/20 rounded-full text-xs font-semibold text-waifu-pink">
+                  <span className="px-1.5 py-0.5 bg-waifu-pink/10 border border-waifu-pink/20 rounded-full text-xs font-semibold text-waifu-pink">
                     TESTNET
                   </span>
                 </div>
@@ -102,63 +109,80 @@ export function WalletConnection() {
           </div>
 
           {/* Enhanced Connection Section */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             {/* Enhanced Network Warning */}
             {showNetworkWarning && (
-              <div className="flex items-center gap-3 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-xl px-4 py-3 shadow-lg backdrop-blur-sm">
-                <div className="p-1 bg-yellow-500/20 rounded-full">
-                  <AlertTriangle className="w-4 h-4 text-yellow-500" />
+              <div className="flex items-center gap-2 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/30 rounded-lg px-3 py-2 shadow-lg backdrop-blur-sm">
+                <div className="p-0.5 bg-yellow-500/20 rounded-full">
+                  <AlertTriangle className="w-3 h-3 text-yellow-500" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-sm font-semibold text-yellow-600 dark:text-yellow-400">Wrong Network</span>
-                  <span className="text-xs text-muted-foreground">Please switch to Abstract Testnet</span>
+                  <span className="text-xs font-semibold text-yellow-600 dark:text-yellow-400">Wrong Network</span>
+                  <span className="text-xs text-muted-foreground">Switch to Abstract Testnet</span>
                 </div>
                 <Button
                   size="sm"
                   onClick={handleSwitchNetwork}
-                  className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-3 py-1 h-auto text-xs transition-all duration-300 hover:scale-105"
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-2 py-1 h-auto text-xs transition-all duration-300 hover:scale-105"
                 >
-                  Switch Network
+                  Switch
                 </Button>
               </div>
             )}
 
             {isConnected ? (
-              <div className="flex items-center gap-4 bg-gradient-to-r from-background/90 to-card/90 border-2 border-waifu-pink/30 rounded-xl px-5 py-3 shadow-lg backdrop-blur-sm hover:border-waifu-pink/50 transition-all duration-300">
+              <div className="flex items-center gap-1 sm:gap-2 bg-gradient-to-r from-background/90 to-card/90 border border-waifu-pink/30 rounded-lg px-2 sm:px-3 py-2 shadow-lg backdrop-blur-sm hover:border-waifu-pink/50 transition-all duration-300 flex-wrap sm:flex-nowrap min-w-0">
                 {/* Connection Status Indicator */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   <div className="relative">
                     <div
-                      className={`w-3 h-3 rounded-full ${showNetworkWarning ? 'bg-yellow-500' : 'bg-green-500'} shadow-sm`}
+                      className={`w-2 h-2 rounded-full ${showNetworkWarning ? 'bg-yellow-500' : 'bg-green-500'} shadow-sm`}
                     />
                     <div
-                      className={`absolute inset-0 w-3 h-3 rounded-full ${showNetworkWarning ? 'bg-yellow-500' : 'bg-green-500'} animate-ping opacity-75`}
+                      className={`absolute inset-0 w-2 h-2 rounded-full ${showNetworkWarning ? 'bg-yellow-500' : 'bg-green-500'} animate-ping opacity-75`}
                     />
                   </div>
-                  <div className="p-2 bg-waifu-pink/10 rounded-lg">
-                    <Wallet className="w-5 h-5 text-waifu-pink" />
+                  <div className="p-1 bg-waifu-pink/10 rounded">
+                    <Wallet className="w-4 h-4 text-waifu-pink" />
                   </div>
                 </div>
 
                 {/* Wallet Info */}
                 <div className="flex flex-col min-w-0 flex-1">
-                  <div className="text-sm font-semibold text-foreground">
+                  <div className="hidden sm:block text-xs font-semibold text-foreground">
                     Connected
                   </div>
-                  <div className="text-sm font-mono text-muted-foreground">
+                  <div className="text-xs font-mono text-muted-foreground">
                     {address ? formatAddress(address) : '0x...'}
                   </div>
                 </div>
+
+                {/* WAIFU Token Balance - Hidden on mobile */}
+                {waifuBalance && waifuBalance > BigInt(0) && (
+                  <div className="hidden sm:flex items-center gap-1 bg-gradient-to-r from-waifu-purple/10 to-waifu-pink/10 border border-waifu-purple/20 rounded px-2 py-1 min-w-0">
+                    <div className="p-0.5 bg-waifu-purple/20 rounded flex-shrink-0">
+                      <Coins className="w-3 h-3 text-waifu-purple" />
+                    </div>
+                    <div className="flex flex-col min-w-0">
+                      <div className="text-xs font-medium text-muted-foreground leading-none">
+                        WAIFU
+                      </div>
+                      <div className="text-xs font-bold text-waifu-purple truncate leading-none">
+                        {formatTokenBalance(waifuBalance)}
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 {/* Disconnect Button */}
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => disconnect()}
-                  className="border-red-500/30 hover:bg-red-500/10 hover:border-red-500/50 text-red-500 hover:text-red-600 px-3 py-2 h-auto transition-all duration-300 hover:scale-105"
+                  className="border-red-500/30 hover:bg-red-500/10 hover:border-red-500/50 text-red-500 hover:text-red-600 px-1.5 sm:px-2 py-1 h-auto transition-all duration-300 hover:scale-105 flex-shrink-0"
                 >
-                  <WifiOff className="w-4 h-4 mr-2" />
-                  <span className="hidden sm:inline">Disconnect</span>
+                  <WifiOff className="w-3 h-3 sm:mr-1" />
+                  <span className="hidden md:inline text-xs">Disconnect</span>
                 </Button>
               </div>
             ) : (
@@ -166,21 +190,21 @@ export function WalletConnection() {
                 <Button
                   onClick={handleConnect}
                   disabled={isPending}
-                  size="lg"
-                  className="bg-waifu-gradient hover:bg-waifu-gradient-reverse border-2 border-waifu-pink-border shadow-waifu-pink text-white font-bold px-6 py-3 h-auto relative overflow-hidden group disabled:opacity-50 transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                  size="sm"
+                  className="bg-waifu-gradient hover:bg-waifu-gradient-reverse border border-waifu-pink-border shadow-waifu-pink text-white font-bold px-3 sm:px-4 py-2 h-auto relative overflow-hidden group disabled:opacity-50 transition-all duration-300 hover:scale-105 hover:shadow-xl"
                 >
                   {/* Shimmer effect */}
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
 
-                  <div className="relative z-10 flex items-center gap-3">
-                    <div className="p-1 bg-white/20 rounded-full">
-                      <Wallet className="w-5 h-5" />
+                  <div className="relative z-10 flex items-center gap-1 sm:gap-2">
+                    <div className="p-0.5 bg-white/20 rounded-full">
+                      <Wallet className="w-4 h-4" />
                     </div>
                     <div className="flex flex-col items-start">
-                      <span className="text-base font-bold">
-                        {isPending ? 'Connecting...' : 'Connect Wallet'}
+                      <span className="text-xs sm:text-sm font-bold leading-none">
+                        {isPending ? 'Connecting...' : 'Connect'}
                       </span>
-                      <span className="text-xs opacity-90">
+                      <span className="hidden sm:block text-xs opacity-90 leading-none">
                         {isPending ? 'Please wait...' : 'Start your journey'}
                       </span>
                     </div>

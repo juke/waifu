@@ -101,7 +101,7 @@ export function HeroSection({ onWatchStream, onTokenSale }: HeroSectionProps) {
 
               <div className="text-center p-4 bg-card/50 border border-border/50 rounded-lg hover:bg-card/80 transition-colors">
                 <div className="text-2xl font-bold text-blue-500">{totalBuyers}</div>
-                <div className="text-xs text-muted-foreground">Community Members</div>
+                <div className="text-xs text-muted-foreground">Members</div>
               </div>
 
               <div className="text-center p-4 bg-card/50 border border-border/50 rounded-lg hover:bg-card/80 transition-colors">
@@ -138,7 +138,7 @@ export function HeroSection({ onWatchStream, onTokenSale }: HeroSectionProps) {
           {/* Hero Image - Right Side */}
           <div className="lg:col-span-5 order-1 lg:order-2">
             <div className="relative">
-              <Card className="border border-border/50 overflow-hidden bg-card/30 backdrop-blur-sm py-0">
+              <Card className="border border-border/30 overflow-hidden bg-gradient-to-br from-card/20 via-card/30 to-card/25 backdrop-blur-sm py-0">
                 <CardContent className="p-0">
                   <div className="relative w-full h-[400px] sm:h-[500px] lg:h-[600px]">
                     <CinematicSlideshow
