@@ -200,15 +200,16 @@ export function RecentTips() {
                         </span>
                       </div>
 
-                      <div className="flex items-center justify-between">
-                        {tip.message && tip.message !== 'Thanks for the great stream!' && (
-                          <div className="flex-1 mr-2">
+                      {/* Message section - always present to maintain consistent spacing */}
+                      <div className="flex items-start justify-between min-h-[20px]">
+                        <div className="flex-1 mr-2">
+                          {tip.message && tip.message !== 'Thanks for the great stream!' && (
                             <p className="text-sm text-muted-foreground italic truncate">
                               &ldquo;{tip.message}&rdquo;
                             </p>
-                          </div>
-                        )}
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground flex-shrink-0">
+                          )}
+                        </div>
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground flex-shrink-0 mt-0.5">
                           <Clock className="w-3 h-3" />
                           {formatTimeAgo(tip.timestamp)}
                         </div>
