@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useCallback } from 'react';
 import { WalletConnection } from '@/components/WalletConnection';
 import { HeroSection } from '@/components/HeroSection';
 import { TokenSale } from '@/components/TokenSale';
@@ -8,6 +9,9 @@ import { FAQ } from '@/components/FAQ';
 
 
 export default function Home() {
+  const [heroRefreshKey, setHeroRefreshKey] = useState(0);
+  const [communityRefreshKey, setCommunityRefreshKey] = useState(0);
+
   const handleWatchStream = () => {
     // Open Abstract stream in new tab
     window.open('https://abstract.stream/waifu', '_blank');
@@ -20,6 +24,12 @@ export default function Home() {
       tokenSaleSection.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  const handlePurchaseSuccess = useCallback(() => {
+    // Trigger refresh of HeroSection stats and CommunityActivity components
+    setHeroRefreshKey(prev => prev + 1);
+    setCommunityRefreshKey(prev => prev + 1);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background relative">
@@ -35,7 +45,11 @@ export default function Home() {
       <main className="relative z-10">
         {/* Hero Section */}
         <section className="relative">
-          <HeroSection onWatchStream={handleWatchStream} onTokenSale={handleTokenSale} />
+          <HeroSection
+            key={`hero-${heroRefreshKey}`}
+            onWatchStream={handleWatchStream}
+            onTokenSale={handleTokenSale}
+          />
         </section>
 
         {/* Enhanced Section Divider */}
@@ -46,7 +60,7 @@ export default function Home() {
 
         {/* Token Sale Section */}
         <section className="relative" id="token-sale">
-          <TokenSale />
+          <TokenSale onPurchaseSuccess={handlePurchaseSuccess} />
         </section>
 
         {/* Enhanced Section Divider */}
@@ -57,7 +71,7 @@ export default function Home() {
 
         {/* Community Activity Section */}
         <section className="relative">
-          <CommunityActivity />
+          <CommunityActivity key={`community-${communityRefreshKey}`} />
         </section>
 
         {/* Enhanced Section Divider */}

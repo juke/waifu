@@ -19,6 +19,7 @@ interface TipEvent {
 export function RecentTips() {
   const [recentTips, setRecentTips] = useState<TipEvent[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const publicClient = usePublicClient();
 
   useEffect(() => {
@@ -27,6 +28,7 @@ export function RecentTips() {
 
       try {
         setLoading(true);
+        setError(null);
 
         // Get recent ETH tip events
         const ethTipLogs = await publicClient.getLogs({
@@ -103,12 +105,18 @@ export function RecentTips() {
         setRecentTips(sortedTips);
       } catch (error) {
         console.error('Error fetching recent tips:', error);
+        setError('Failed to load recent tips. Please check your connection.');
+        // Set empty array to prevent infinite loading
+        setRecentTips([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchRecentTips();
+    // Only fetch if publicClient is available
+    if (publicClient) {
+      fetchRecentTips();
+    }
   }, [publicClient]);
 
   const formatAddress = (address: string) => {
@@ -146,6 +154,16 @@ export function RecentTips() {
               <div className="text-center py-6 text-muted-foreground">
                 <div className="animate-spin w-6 h-6 border-2 border-waifu-pink border-t-transparent rounded-full mx-auto mb-2"></div>
                 <p className="text-sm">Loading recent tips...</p>
+              </div>
+            ) : error ? (
+              <div className="text-center py-6 text-muted-foreground">
+                <p className="text-sm text-red-500">{error}</p>
+                <button
+                  onClick={() => setError(null)}
+                  className="mt-2 text-xs text-waifu-pink hover:underline"
+                >
+                  Try again
+                </button>
               </div>
             ) : recentTips.length > 0 ? (
               <div className="space-y-4">

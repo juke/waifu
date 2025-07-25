@@ -75,7 +75,7 @@ interface ToastContainerProps {
 
 export function ToastContainer({ toasts, onClose }: ToastContainerProps) {
   return (
-    <div className="fixed top-4 right-4 z-50 space-y-2">
+    <div className="fixed top-24 right-4 z-50 space-y-2">
       <AnimatePresence>
         {toasts.map((toast) => (
           <ToastComponent
@@ -89,8 +89,23 @@ export function ToastContainer({ toasts, onClose }: ToastContainerProps) {
   );
 }
 
-// Hook for managing toasts
-export function useToast() {
+// Toast Context
+import { createContext, useContext } from 'react';
+
+interface ToastContextType {
+  toasts: Toast[];
+  addToast: (toast: Omit<Toast, 'id'>) => void;
+  removeToast: (id: string) => void;
+  success: (title: string, description?: string) => void;
+  error: (title: string, description?: string) => void;
+  warning: (title: string, description?: string) => void;
+  info: (title: string, description?: string) => void;
+}
+
+const ToastContext = createContext<ToastContextType | undefined>(undefined);
+
+// Toast Provider Component
+export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   const addToast = (toast: Omit<Toast, 'id'>) => {
@@ -118,7 +133,7 @@ export function useToast() {
     addToast({ type: 'info', title, description });
   };
 
-  return {
+  const value = {
     toasts,
     addToast,
     removeToast,
@@ -127,4 +142,20 @@ export function useToast() {
     warning,
     info,
   };
+
+  return (
+    <ToastContext.Provider value={value}>
+      {children}
+      <ToastContainer toasts={toasts} onClose={removeToast} />
+    </ToastContext.Provider>
+  );
+}
+
+// Hook for using toasts
+export function useToast() {
+  const context = useContext(ToastContext);
+  if (context === undefined) {
+    throw new Error('useToast must be used within a ToastProvider');
+  }
+  return context;
 }

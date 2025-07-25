@@ -18,6 +18,7 @@ interface TipperStats {
 export function Leaderboard() {
   const [topTippers, setTopTippers] = useState<TipperStats[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const publicClient = usePublicClient();
 
   useEffect(() => {
@@ -26,6 +27,7 @@ export function Leaderboard() {
 
       try {
         setLoading(true);
+        setError(null);
 
         // Get all ETH tip events
         const ethTipLogs = await publicClient.getLogs({
@@ -111,13 +113,19 @@ export function Leaderboard() {
         setTopTippers(sortedTippers);
       } catch (error) {
         console.error('Error fetching top tippers:', error);
+        setError('Failed to load leaderboard. Please check your connection.');
+        // Set empty array to prevent infinite loading
+        setTopTippers([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchTopTippers();
-  }, [publicClient]);
+    // Only fetch if publicClient is available and no error
+    if (publicClient && !error) {
+      fetchTopTippers();
+    }
+  }, [publicClient, error]);
 
   const formatAddress = (address: string) => {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
@@ -162,6 +170,16 @@ export function Leaderboard() {
               <div className="text-center py-6 text-muted-foreground">
                 <div className="animate-spin w-6 h-6 border-2 border-yellow-500 border-t-transparent rounded-full mx-auto mb-2"></div>
                 <p className="text-sm">Loading leaderboard...</p>
+              </div>
+            ) : error ? (
+              <div className="text-center py-6 text-muted-foreground">
+                <p className="text-sm text-red-500">{error}</p>
+                <button
+                  onClick={() => setError(null)}
+                  className="mt-2 text-xs text-yellow-500 hover:underline"
+                >
+                  Try again
+                </button>
               </div>
             ) : topTippers.length > 0 ? (
               <div className="space-y-4">

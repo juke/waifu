@@ -1,10 +1,18 @@
 'use client';
 
+import { useState, useCallback } from 'react';
 import { TippingComponent } from './TippingComponent';
 import { RecentTips } from './RecentTips';
 import { Leaderboard } from './Leaderboard';
 
 export function CommunityActivity() {
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleTipSuccess = useCallback(() => {
+    // Trigger refresh of RecentTips and Leaderboard
+    setRefreshKey(prev => prev + 1);
+  }, []);
+
   return (
     <section className="py-12 lg:py-16 relative overflow-hidden section-bg-community">
       {/* Redesigned attractive background with better visual appeal */}
@@ -24,17 +32,17 @@ export function CommunityActivity() {
         <div className="space-y-12 max-w-7xl mx-auto">
           {/* Tipping Component - Full Width Above */}
           <div className="max-w-2xl mx-auto">
-            <TippingComponent />
+            <TippingComponent onTipSuccess={handleTipSuccess} />
           </div>
 
           {/* Recent Tips and Leaderboard - Two Columns Below */}
           <div className="grid lg:grid-cols-2 gap-8">
             <div className="space-y-6">
-              <RecentTips />
+              <RecentTips key={`recent-tips-${refreshKey}`} />
             </div>
 
             <div className="space-y-6">
-              <Leaderboard />
+              <Leaderboard key={`leaderboard-${refreshKey}`} />
             </div>
           </div>
         </div>

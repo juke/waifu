@@ -9,12 +9,19 @@ import { Coins, TrendingUp, AlertCircle, Plus } from 'lucide-react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { parseEther, formatEther, formatUnits } from 'viem';
 import { CONTRACTS, TOKEN_CONFIG } from '@/lib/contracts';
+import { useToast } from '@/components/ui/toast';
 
-export function TokenSale() {
+interface TokenSaleProps {
+  onPurchaseSuccess?: () => void;
+}
+
+export function TokenSale({ onPurchaseSuccess }: TokenSaleProps) {
   const { isConnected } = useAccount();
   const [amount, setAmount] = useState('');
   const [ethAmount, setEthAmount] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [hasShownSuccess, setHasShownSuccess] = useState(false);
+  const toast = useToast();
 
   // Contract interactions
   const { writeContract, data: hash, isPending, error: writeError } = useWriteContract();
@@ -37,7 +44,7 @@ export function TokenSale() {
   }, [writeError, receiptError]);
 
   // Read enhanced contract data
-  const { data: saleStats } = useReadContract({
+  const { data: saleStats, refetch: refetchSaleStats } = useReadContract({
     ...CONTRACTS.TOKEN_SALE,
     functionName: 'getSaleStats',
   });
@@ -47,17 +54,11 @@ export function TokenSale() {
     functionName: 'rate',
   });
 
-  const { data: saleActive } = useReadContract({
-    ...CONTRACTS.TOKEN_SALE,
-    functionName: 'saleActive',
-  });
-
   // Parse sale stats
   const totalTokensSold = saleStats ? Number(formatUnits(saleStats[0] as bigint, 18)) : 0;
   const totalETHRaised = saleStats ? Number(formatEther(saleStats[1] as bigint)) : 0;
   const totalBuyers = saleStats ? Number(saleStats[2]) : 0;
   const tokensAvailable = saleStats ? Number(formatUnits(saleStats[3] as bigint, 18)) : 1000000;
-  const isActive = saleStats ? saleStats[4] as boolean : true;
 
   // Calculate values for display
   const totalSupply = totalTokensSold + tokensAvailable;
@@ -113,6 +114,7 @@ export function TokenSale() {
 
     try {
       setError(null);
+      setHasShownSuccess(false); // Reset success flag for new purchase
       const tokenAmount = BigInt(amount);
       const ethValue = parseEther(ethAmount);
 
@@ -131,19 +133,35 @@ export function TokenSale() {
 
   // Reset form on successful transaction
   useEffect(() => {
-    if (isConfirmed) {
+    if (isConfirmed && !hasShownSuccess) {
+      // Show success message
+      toast.success(
+        'Purchase Successful! 🎉',
+        `You successfully purchased ${amount} WAIFU tokens for ${ethAmount} ETH!`
+      );
+
+      // Clear form
       setAmount('');
       setEthAmount('');
       setError(null);
+      setHasShownSuccess(true);
+
+      // Refresh sale stats
+      refetchSaleStats();
+
+      // Trigger refresh of parent components
+      onPurchaseSuccess?.();
     }
-  }, [isConfirmed]);
+  }, [isConfirmed, amount, ethAmount, hasShownSuccess]);
 
   // Handle write errors
   useEffect(() => {
     if (writeError) {
-      setError(writeError.message || 'Transaction failed');
+      const errorMessage = writeError.message || 'Transaction failed';
+      setError(errorMessage);
+      toast.error('Transaction Failed', errorMessage);
     }
-  }, [writeError]);
+  }, [writeError, toast]);
 
   return (
     <section className="py-12 lg:py-16 relative overflow-hidden section-bg-sale">

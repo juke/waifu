@@ -3,6 +3,28 @@ import { createConfig, http } from 'wagmi';
 import { defineChain } from 'viem';
 import { injected, walletConnect } from 'wagmi/connectors';
 
+// Get RPC URLs from environment variables or use defaults
+const getAbstractRpcUrls = () => {
+  const customRpc = process.env.NEXT_PUBLIC_ABSTRACT_RPC_URL;
+  const customWs = process.env.NEXT_PUBLIC_ABSTRACT_WS_URL;
+
+  // Default RPC endpoints with fallbacks
+  const defaultHttpUrls = [
+    'https://api.testnet.abs.xyz',
+    // Add more fallback URLs here if available
+  ];
+
+  const defaultWsUrls = [
+    'wss://api.testnet.abs.xyz/ws',
+    // Add more fallback WebSocket URLs here if available
+  ];
+
+  return {
+    http: customRpc ? [customRpc, ...defaultHttpUrls] : defaultHttpUrls,
+    webSocket: customWs ? [customWs, ...defaultWsUrls] : defaultWsUrls,
+  };
+};
+
 // Define Abstract testnet chain
 export const abstractTestnet = defineChain({
   id: 11124,
@@ -13,10 +35,7 @@ export const abstractTestnet = defineChain({
     symbol: 'ETH',
   },
   rpcUrls: {
-    default: {
-      http: ['https://api.testnet.abs.xyz'],
-      webSocket: ['wss://api.testnet.abs.xyz/ws'],
-    },
+    default: getAbstractRpcUrls(),
   },
   blockExplorers: {
     default: {
@@ -38,7 +57,11 @@ export const config = createConfig({
     ...(projectId ? [walletConnect({ projectId })] : []),
   ],
   transports: {
-    [abstractTestnet.id]: http(),
+    [abstractTestnet.id]: http(undefined, {
+      batch: true,
+      retryCount: 3,
+      retryDelay: 1000,
+    }),
   },
 });
 

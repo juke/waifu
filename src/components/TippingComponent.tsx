@@ -9,30 +9,43 @@ import { Gift, Plus } from 'lucide-react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { parseEther, parseUnits, formatUnits } from 'viem';
 import { CONTRACTS } from '@/lib/contracts';
+import { useToast } from '@/components/ui/toast';
 
-export function TippingComponent() {
+interface TippingComponentProps {
+  onTipSuccess?: () => void;
+}
+
+export function TippingComponent({ onTipSuccess }: TippingComponentProps) {
   const { address, isConnected } = useAccount();
   const [tipAmount, setTipAmount] = useState('');
   const [tipMessage, setTipMessage] = useState('');
   const [tipType, setTipType] = useState<'ETH' | 'WAIFU'>('ETH');
   const [needsApproval, setNeedsApproval] = useState(false);
+  const [hasShownSuccess, setHasShownSuccess] = useState(false);
+  const toast = useToast();
 
   // Contract interactions
   const { writeContract, data: hash, isPending } = useWriteContract();
   const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({ hash });
 
   // Get user's WAIFU balance
-  const { data: waifuBalance } = useReadContract({
+  const { data: waifuBalance, refetch: refetchBalance } = useReadContract({
     ...CONTRACTS.WAIFU_TOKEN,
     functionName: 'balanceOf',
     args: address ? [address] : undefined,
   });
 
   // Get current allowance
-  const { data: allowance } = useReadContract({
+  const { data: allowance, refetch: refetchAllowance } = useReadContract({
     ...CONTRACTS.WAIFU_TOKEN,
     functionName: 'allowance',
     args: address ? [address, CONTRACTS.TIPPING.address] : undefined,
+  });
+
+  // Get tipping stats for refresh
+  const { data: tippingStats, refetch: refetchTippingStats } = useReadContract({
+    ...CONTRACTS.TIPPING,
+    functionName: 'getTippingStats',
   });
 
   const addTokenToWallet = async () => {
@@ -72,11 +85,36 @@ export function TippingComponent() {
         args: [tokenAmount, tipMessage || 'Thanks for the great stream!'],
       });
       setNeedsApproval(false);
+    } else if (isConfirmed && !needsApproval && !hasShownSuccess) {
+      // Transaction completed successfully
+      const tipTypeText = tipType === 'ETH' ? 'ETH' : 'WAIFU tokens';
+      const message = tipMessage || 'Thanks for the great stream!';
+
+      toast.success(
+        'Tip Sent Successfully! 🎉',
+        `Your ${tipAmount} ${tipTypeText} tip has been sent with message: "${message}"`
+      );
+
+      // Clear form
+      setTipAmount('');
+      setTipMessage('');
+      setHasShownSuccess(true);
+
+      // Refresh data
+      refetchBalance();
+      refetchAllowance();
+      refetchTippingStats();
+
+      // Trigger refresh of parent components
+      onTipSuccess?.();
     }
-  }, [isConfirmed, needsApproval, tipType, tipAmount, tipMessage, writeContract]);
+  }, [isConfirmed, needsApproval, tipType, tipAmount, tipMessage, writeContract, hasShownSuccess]);
 
   const handleTip = () => {
     if (!tipAmount || !isConnected) return;
+
+    // Reset success flag for new tip
+    setHasShownSuccess(false);
 
     console.log('Tipping with:', { tipType, tipAmount, tipMessage }); // Debug log
 
@@ -105,7 +143,10 @@ export function TippingComponent() {
 
       // Check if user has enough balance
       if (userBalance < Number(tipAmount)) {
-        alert(`Insufficient WAIFU balance. You have ${userBalance.toFixed(2)} WAIFU but trying to tip ${tipAmount}`);
+        toast.error(
+          'Insufficient Balance',
+          `You have ${userBalance.toFixed(2)} WAIFU but trying to tip ${tipAmount} WAIFU`
+        );
         return;
       }
 
@@ -234,6 +275,18 @@ export function TippingComponent() {
                   >
                     <Plus className="w-4 h-4 mr-1" />
                     Add Token
+                  </Button>
+                </div>
+
+                {/* Test Toast Button - Remove after testing */}
+                <div className="mt-2 text-center">
+                  <Button
+                    onClick={() => toast.success('🎉 Toast Test', 'Toast system is working correctly!')}
+                    variant="outline"
+                    size="sm"
+                    className="text-xs"
+                  >
+                    Test Toast System
                   </Button>
                 </div>
               </div>
