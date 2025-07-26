@@ -59,13 +59,13 @@ function StatCard({ value, label, color, isLoading, icon }: StatCardProps) {
 
   return (
     <div className="group relative">
-      {/* Beautiful glass morphism stats card */}
-      <div className={`text-center p-3 sm:p-4 bg-gradient-to-br from-white/20 via-white/10 to-white/5 backdrop-blur-md border border-white/20 rounded-xl ${colors.border} transition-all duration-300 hover:from-white/30 hover:via-white/20 hover:to-white/10 hover:border-white/30 hover:shadow-xl hover:shadow-black/10 hover:-translate-y-0.5`}>
-        {/* Beautiful colored gradient overlay */}
-        <div className={`absolute inset-0 bg-gradient-to-br ${colors.bg} via-transparent to-transparent opacity-0 group-hover:opacity-25 transition-opacity duration-300 rounded-xl`} />
+      {/* Enhanced visibility stats card */}
+      <div className={`text-center p-3 sm:p-4 bg-gradient-to-br from-white/40 via-white/25 to-white/15 backdrop-blur-md border-2 border-white/30 rounded-xl ${colors.border} transition-all duration-300 hover:from-white/50 hover:via-white/35 hover:to-white/25 hover:border-white/50 hover:shadow-xl hover:shadow-black/20 hover:-translate-y-1 shadow-lg shadow-black/5`}>
+        {/* Enhanced colored gradient overlay */}
+        <div className={`absolute inset-0 bg-gradient-to-br ${colors.bg} via-transparent to-transparent opacity-0 group-hover:opacity-30 transition-opacity duration-300 rounded-xl`} />
 
-        {/* Subtle inner glow effect */}
-        <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/5 via-transparent to-transparent opacity-50" />
+        {/* Enhanced inner glow effect */}
+        <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-60" />
 
         <div className="relative z-10">
           {/* Icon with subtle glow effect */}
@@ -75,8 +75,8 @@ function StatCard({ value, label, color, isLoading, icon }: StatCardProps) {
             </div>
           )}
 
-          {/* Value with enhanced styling */}
-          <div className={`text-xl sm:text-2xl font-bold ${colors.text} transition-all duration-300 group-hover:scale-105 ${isLoading ? 'animate-pulse' : ''} drop-shadow-sm`}>
+          {/* Value with enhanced typography */}
+          <div className={`text-xl sm:text-2xl font-bold ${colors.text} transition-all duration-300 group-hover:scale-105 ${isLoading ? 'animate-pulse' : ''} drop-shadow-sm tracking-tight leading-tight`}>
             {isLoading ? (
               <div className={`h-7 sm:h-8 w-16 sm:w-20 mx-auto ${colors.loadingBg} rounded-lg animate-pulse`} />
             ) : (
@@ -84,8 +84,8 @@ function StatCard({ value, label, color, isLoading, icon }: StatCardProps) {
             )}
           </div>
 
-          {/* Label with better contrast */}
-          <div className="text-xs text-gray-700 font-semibold mt-1.5 transition-colors duration-300 group-hover:text-gray-800 opacity-90">
+          {/* Label with improved typography */}
+          <div className="text-xs text-gray-700 font-medium mt-2 transition-colors duration-300 group-hover:text-gray-800 opacity-90 tracking-wide leading-relaxed">
             {label}
           </div>
         </div>
@@ -147,32 +147,37 @@ export function HeroSection({ onWatchStream, onTokenSale }: HeroSectionProps) {
           {/* Hero Content - Left Side */}
           <div className="lg:col-span-7 space-y-6 lg:space-y-8 order-2 lg:order-1">
 
-            {/* Live Badge */}
+            {/* Live Badge - Enhanced Typography */}
             <div className="text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-red-500/10 border border-red-500/20 rounded-full text-sm font-medium text-red-500">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-red-500/10 border border-red-500/20 rounded-full text-sm font-medium text-red-500 tracking-wide">
                 <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
                 Live on Abstract Testnet
               </div>
             </div>
 
-            {/* Main Title - Enhanced Typography */}
+            {/* Main Title - Enhanced Typography Hierarchy */}
             <div className="space-y-6 text-center lg:text-left">
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold font-serif leading-[1.1]">
-                <span className="block text-waifu-gradient drop-shadow-sm">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[0.95] tracking-tight">
+                <span className="block text-waifu-gradient drop-shadow-sm leading-[0.95]">
                   Meet Your
                 </span>
-                <span className="block text-foreground">
+                <span className="block text-foreground leading-[0.95]">
                   Web3 AI Waifu
                 </span>
               </h1>
 
-              <div className="space-y-3">
-                <p className="text-lg sm:text-xl lg:text-2xl text-muted-foreground max-w-2xl leading-relaxed mx-auto lg:mx-0">
-                  Join the 24/7 AI stream experience on Abstract blockchain.
-                </p>
-                <p className="text-lg sm:text-xl text-waifu-pink font-semibold max-w-2xl mx-auto lg:mx-0">
-                  Buy tokens, tip your waifu and build the community!
-                </p>
+              {/* Balanced subtitle with proper length */}
+              <div className="space-y-4">
+                <div className="relative max-w-3xl mx-auto lg:mx-0">
+                  <div className="space-y-4">
+                    <p className="text-xl sm:text-2xl lg:text-3xl text-foreground/90 leading-snug font-serif font-semibold tracking-wide">
+                      Where AI personality meets blockchain innovation
+                    </p>
+                    <p className="text-sm sm:text-base text-foreground/55 leading-relaxed font-normal tracking-normal">
+                      Experience interactive streaming with token rewards and community ownership
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -211,24 +216,24 @@ export function HeroSection({ onWatchStream, onTokenSale }: HeroSectionProps) {
               />
             </div>
 
-            {/* Call to Action Buttons - Optimized for Performance */}
+            {/* Call to Action Buttons - Enhanced Typography */}
             <div className="flex flex-col sm:flex-row gap-4">
               {/* Primary CTA - Watch Stream */}
               <Button
                 size="lg"
                 onClick={handleWatchStream}
-                className="group bg-waifu-gradient hover:bg-waifu-gradient-reverse text-white font-bold px-6 py-3 h-auto transition-colors duration-200 shadow-lg border-2 border-white/20 hover:border-white/40"
+                className="group bg-waifu-gradient-animated text-white font-semibold px-6 py-3 h-auto transition-all duration-200 shadow-lg border-2 border-white/20 hover:border-white/40 tracking-wide hover:shadow-xl hover:scale-105"
               >
                 <Play className="w-4 h-4 mr-2" />
                 Watch Live Stream
                 <ExternalLink className="w-3 h-3 ml-2 transition-transform duration-200 group-hover:translate-x-0.5" />
               </Button>
 
-              {/* Secondary CTA - Token Sale - Removed backdrop-blur for performance */}
+              {/* Secondary CTA - Token Sale */}
               <Button
                 size="lg"
                 onClick={handleTokenSale}
-                className="group bg-white/10 border-2 border-waifu-pink text-waifu-pink hover:bg-waifu-pink hover:text-white font-bold px-6 py-3 h-auto transition-colors duration-200"
+                className="group bg-white/10 border-2 border-waifu-pink text-waifu-pink hover:bg-waifu-pink hover:text-white font-semibold px-6 py-3 h-auto transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 tracking-wide"
               >
                 <ShoppingCart className="w-4 h-4 mr-2" />
                 Buy WAIFU Tokens
@@ -251,27 +256,27 @@ export function HeroSection({ onWatchStream, onTokenSale }: HeroSectionProps) {
                       {/* Simplified overlay */}
                       <div className="absolute inset-0 bg-gradient-to-t from-background/20 via-transparent to-transparent"></div>
 
-                      {/* Live indicator - Removed backdrop-blur for performance */}
+                      {/* Live indicator - Enhanced Typography */}
                       <div className="absolute top-4 left-4 z-10">
-                        <div className="flex items-center gap-2 bg-red-500/95 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg border border-red-400/50">
+                        <div className="flex items-center gap-2 bg-red-500/95 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg border border-red-400/50 tracking-wide">
                           <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
                           LIVE
                         </div>
                       </div>
 
-                      {/* Viewer count - Removed backdrop-blur for performance */}
+                      {/* Viewer count - Enhanced Typography */}
                       <div className="absolute top-4 right-4 z-10">
-                        <div className="flex items-center gap-1 bg-black/70 text-white px-3 py-1.5 rounded-full text-xs font-medium shadow-lg border border-white/20">
+                        <div className="flex items-center gap-1 bg-black/70 text-white px-3 py-1.5 rounded-full text-xs font-medium shadow-lg border border-white/20 tracking-wide">
                           <div className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></div>
                           # viewers
                         </div>
                       </div>
 
-                      {/* Floating Action Button - Optimized for performance */}
+                      {/* Floating Action Button - Enhanced Typography */}
                       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-20">
                         <Button
                           onClick={handleWatchStream}
-                          className="group bg-waifu-gradient hover:bg-waifu-gradient-reverse text-white font-semibold px-4 py-2 text-sm h-auto transition-colors duration-200 shadow-xl backdrop-blur-sm border border-white/30 hover:border-white/50"
+                          className="group bg-waifu-gradient-animated text-white font-semibold px-4 py-2 text-sm h-auto transition-all duration-200 shadow-xl backdrop-blur-sm border-2 border-white/30 hover:border-white/50 tracking-wide hover:scale-105"
                         >
                           <Play className="w-4 h-4 mr-1.5" />
                           Watch Live
