@@ -159,7 +159,7 @@ export function WalletConnection() {
 
                 {/* WAIFU Token Balance - Hidden on mobile */}
                 {waifuBalance && waifuBalance > BigInt(0) && (
-                  <div className="hidden sm:flex items-center gap-1 bg-gradient-to-r from-waifu-purple/10 to-waifu-pink/10 border border-waifu-purple/20 rounded px-2 py-1 min-w-0">
+                  <div className="hidden sm:flex items-center gap-1 bg-gradient-to-r from-waifu-purple/10 to-waifu-pink/10 border border-waifu-purple/20 rounded px-2 py-0.5 min-w-0">
                     <div className="p-0.5 bg-waifu-purple/20 rounded flex-shrink-0">
                       <Coins className="w-3 h-3 text-waifu-purple" />
                     </div>

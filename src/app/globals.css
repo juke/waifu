@@ -523,6 +523,25 @@
     animation: bounce-soft 2s ease-in-out infinite;
   }
 
+  /* Visible wave animations with balanced performance */
+  .animate-wave-rotate-visible {
+    animation: wave-rotate-visible 45s linear infinite;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  .animate-wave-rotate-counter {
+    animation: wave-rotate-counter 60s linear infinite reverse;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  .animate-wave-pulse-visible {
+    animation: wave-pulse-visible 8s ease-in-out infinite;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
   @keyframes float {
     0%, 100% { transform: translateY(0px); }
     50% { transform: translateY(-8px); }
@@ -545,6 +564,30 @@
     }
     50% {
       background-position: 100% 50%;
+    }
+  }
+
+  /* Visible animation keyframes with balanced performance */
+  @keyframes wave-rotate-visible {
+    from { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.05); }
+    to { transform: rotate(360deg) scale(1); }
+  }
+
+  @keyframes wave-rotate-counter {
+    from { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(-180deg) scale(1.03); }
+    to { transform: rotate(-360deg) scale(1); }
+  }
+
+  @keyframes wave-pulse-visible {
+    0%, 100% {
+      opacity: 0.6;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.9;
+      transform: scale(1.08);
     }
   }
 
@@ -662,10 +705,42 @@
   }
 
 
-  /* GPU acceleration for smooth animations */
+  /* Optimized GPU acceleration - reduced will-change usage for better performance */
   .transition-gpu {
     transform: translateZ(0);
-    will-change: transform, opacity;
     backface-visibility: hidden;
+  }
+
+  /* Performance-optimized animation classes */
+  .animate-optimized {
+    animation-fill-mode: both;
+    animation-timing-function: ease-out;
+  }
+
+  /* Performance optimizations */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-wave-rotate-visible,
+    .animate-wave-rotate-counter,
+    .animate-wave-pulse-visible,
+    .transition-gpu,
+    .animate-optimized,
+    .animate-pulse,
+    .animate-bounce {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+
+  /* Optimize animations during scroll for better performance */
+  @media (max-width: 768px) {
+    .animate-wave-rotate-visible {
+      animation-duration: 60s; /* Slower on mobile */
+    }
+    .animate-wave-rotate-counter {
+      animation-duration: 80s; /* Slower on mobile */
+    }
+    .animate-wave-pulse-visible {
+      animation-duration: 12s; /* Slower on mobile */
+    }
   }
 }
